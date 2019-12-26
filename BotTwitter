@@ -1,21 +1,47 @@
 from twitterscraper import query_tweets
 import datetime as dt
 import pandas as pd
+import json
+import requests
 
+#armazena a string de busca do usuário
+busca = input("Digite a busca que deseja fazer: ")
 
-begin_date = dt.date(2019,4,15) #data inicial do tweet
-end_date = dt.date(2019,4,18)   #data final do tweet
+#data inicial do tweet
+begin_date = dt.date(2019,4,15)
 
-limit = 1000         #limite de tweets para busca
+#data final do tweet
+end_date = dt.date(2019,4,18)   
 
-lang = 'portuguese'  #língua em que os tweets serão buscados
+#limite de tweets para busca
+limit = 1
 
+#língua em que os tweets serão buscados
+lang = 'portuguese' 
 
 #faz a busca no Twitter com os parâmetros estabelecidos
-tweets = query_tweets("bolsonaro",begindate= begin_date,enddate=end_date,limit=limit,lang=lang)
+tweets = query_tweets(busca,begindate= begin_date,enddate=end_date,limit=limit,lang=lang)
 
 #transforma as infos coletadas em um data frame
 df = pd.DataFrame(t.__dict__ for t in tweets)
 
-#converte as infos num arquivo csv
-df.to_csv('Twitter.csv', sep=';', encoding='utf-8')
+#número de tweets extraídos
+rows = (len(df))    
+
+#exclui as colunas selecionadas
+df = df.drop(['username','user_id','tweet_id','tweet_url','timestamp','timestamp_epochs',
+'text_html','links','hashtags','has_media','img_urls','video_url',
+'retweets','is_replied','is_reply_to','parent_tweet_id','reply_to_users'],axis=1)
+
+#altera o nome das colunas
+df.columns = ['user','comentario','amei','compartilhamentos']
+
+#transforma o data frame em um json
+df = df.to_json(orient='records')
+
+#carrega o json
+json_obj = json.loads(df)
+
+#laço que percorre o numero de tweets e exporta os dados json para uma API web
+for t in range(rows):
+    requests.post('http://5dce0a94d795470014e4d4cf.mockapi.io/teste/pessoas',json_obj[t])

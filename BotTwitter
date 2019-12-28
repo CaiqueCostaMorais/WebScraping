@@ -7,14 +7,14 @@ import requests
 ###DELETAR OS DADOS ANTIGOS EXTRAÍDOS DO TWITTER
 
 #seta a url da api, onde estão os registros já feitos
-url_api = requests.get('http://5dce0a94d795470014e4d4cf.mockapi.io/teste/pessoas/').content
+url_api = requests.get('http://5e026b0363d08b0014a28920.mockapi.io/TesteTwitter/').content
 
 #carrega o json da api
 json_api = json.loads(url_api)
 
 #laço para deletar os dados antigos extraídos do Twitter
 for t in range(len(json_api)+1):
-    requests.delete('http://5dce0a94d795470014e4d4cf.mockapi.io/teste/pessoas/' + str(t)).content
+    requests.delete('http://5e026b0363d08b0014a28920.mockapi.io/TesteTwitter/' + str(t)).content
 
 
 ###EXTRAIR OS DADOS DO TWITTER E ENVIAR PARA A API
@@ -59,5 +59,5 @@ json_obj = json.loads(df)
 
 #laço que percorre o numero de tweets e exporta os dados json para uma API web
 for t in range(size):
-    requests.post('http://5dce0a94d795470014e4d4cf.mockapi.io/teste/pessoas',json_obj[t])
+    requests.post('http://5e026b0363d08b0014a28920.mockapi.io/TesteTwitter',json_obj[t])
     
